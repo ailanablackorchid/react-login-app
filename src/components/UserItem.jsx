@@ -8,7 +8,7 @@ function UserItem(props) {
       </div>
       <div>
         <p>
-          {props.first_name} {props.second_name}
+          {props.first_name} {props.last_name}
         </p>
         <p>{props.email}</p>
       </div>

@@ -9,13 +9,11 @@ function AppRouter(props) {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const dispatch = useDispatch();
 
-  console.log(isLoggedIn);
-
   useEffect(() => {
-    const authToken = window.localStorage.getItem('authToken');
+    const authToken = window.localStorage.getItem("authToken");
 
-    if(authToken) {
-      dispatch({type: 'SET_IS_LOGGED', payload: true});
+    if (authToken) {
+      dispatch({ type: "SET_IS_LOGGED", payload: true });
     }
   }, [token, dispatch]);
 
@@ -31,19 +29,20 @@ function AppRouter(props) {
       ))}
       <Route path="*" element={<Navigate to="/users" replace />} />
     </Routes>
-  ) : (<>
-    <div>eve.holt@reqres.in</div>
-    <Routes>
-      {publicRoutes.map((route) => (
-        <Route
-          path={route.path}
-          exact={route.exact}
-          element={route.element}
-          key={route.path}
-        />
-      ))}
-      <Route path="*" element={<Navigate to="/login" replace />} />
-    </Routes>
+  ) : (
+    <>
+      <div>eve.holt@reqres.in</div>
+      <Routes>
+        {publicRoutes.map((route) => (
+          <Route
+            path={route.path}
+            exact={route.exact}
+            element={route.element}
+            key={route.path}
+          />
+        ))}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
     </>
   );
 }
