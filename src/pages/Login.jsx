@@ -1,15 +1,26 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import PostService from "../API/PostService";
+import { useFetching } from "../hooks/useFetching";
 
 function Login(props) {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
   const { email, password } = formData;
 
-  const dispatch = useDispatch();
+  const [fetchLogin, isLoading, loginError] = useFetching(async (formData) => {
+    const response = await PostService.login(formData);
+    const json = await response.json();
+    const token = json.token;
+    if (token) {
+      dispatch({ type: "SET_TOKEN", payload: token });
+      dispatch({ type: "SET_IS_LOGGED", payload: true });
+    }
+    window.localStorage.setItem("authToken", token);
+  });
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -20,33 +31,7 @@ function Login(props) {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    login(formData);
-  };
-
-  const login = async (formData) => {
-    const { email, password } = formData;
-    const response = await fetch("https://reqres.in/api/login", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-      error: function (result, status) {
-        console.log(result);
-      },
-    });
-
-    let json = await response.json();
-    const token = json.token;
-    if (token) {
-      dispatch({ type: "SET_TOKEN", payload: token });
-      dispatch({ type: "SET_IS_LOGGED", payload: true });
-    }
-    window.localStorage.setItem("authToken", token);
+    fetchLogin(formData);
   };
 
   return (

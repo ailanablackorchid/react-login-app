@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { privateRoutes, publicRoutes } from "../routes";
+import { privateRoutes, publicRoutes } from "../router";
 
 function AppRouter(props) {
   const token = useSelector((state) => state.auth.token);
