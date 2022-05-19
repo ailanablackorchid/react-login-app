@@ -31,32 +31,11 @@ export const userReducer = (state = initialState, action) => {
         total_pages: action.payload,
       };
     case ADD_MANY_USERS:
-      // const alredyin = [...state.users];
-      // const newValues = [...action.payload];
-      // const filteredNewValues = newValues.filter(
-      //   (user) => user.id in state.userIds
-      // );
+      const result = action.payload.filter(
+        (newuser) => !state.users.some((user) => newuser.id === user.id)
+      );
+      return { ...state, users: [...state.users, ...result] };
 
-      // newValues.forEach((user) => {
-      //   if (alredyin.indexOf(user) === -1) {
-      //     console.log("indexOF");
-      //     console.log(user);
-      //     console.log(alredyin.indexOf(user));
-      //     alredyin.push(user);
-      //   }
-      // });
-      // console.log("NewValues");
-      // console.log(newValues);
-
-      // console.log("AlreadyIN");
-      // console.log(alredyin);
-
-      // return { ...state, users: [...alredyin, ...filteredNewValues] };
-      action.payload.forEach((user) => {
-        state.userIds[user.id] = true;
-      });
-
-      return { ...state, users: [...state.users, ...action.payload] };
     default:
       return state;
   }

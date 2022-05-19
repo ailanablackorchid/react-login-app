@@ -5,72 +5,36 @@ import { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 import GetService from "../API/GetService";
 import { useFetching } from "../hooks/useFetching";
+import { useUsers } from "../hooks/useSearch";
 
 function UserList(props) {
   const dispatch = useDispatch();
 
-  const [data, setData] = useState({});
-  const [users, setUsers] = useState([]);
   const [current_page, setPage] = useState(1);
-  const [total_pages, setTotalPages] = useState(10);
   const [filter_value, setFilterValue] = useState("");
 
-  const userIds = useSelector((state) => state.user.userIds);
   const allUsers = useSelector((state) => state.user.users);
+
+  //fetch data from API
 
   const [fetchUsers, isLoading, fetchUsersError] = useFetching(async (page) => {
     const response = await GetService.getUserList(page);
     const json = await response.json();
-    console.log(json);
-    return json;
+    dispatch({ type: "ADD_MANY_USERS", payload: json.data });
   });
-
-  //   logout functionality
-  function logout() {
-    window.localStorage.removeItem("authToken");
-    dispatch({ type: "SET_IS_LOGGED", payload: false });
-  }
 
   useEffect(() => {
     fetchUsers(current_page);
   }, [current_page]);
 
-  const userChecker = () => {
-    if (current_page <= total_pages) {
-      const response = data;
-      console.log("response");
-      console.log(response);
-      if (response.data !== undefined) {
-        if (Object.keys(userIds)) {
-          const users = response.data.filter((user) => !(user.id in userIds));
-        }
-        dispatch({ type: "ADD_MANY_USERS", payload: users });
-        setTotalPages(response.total_pages);
-        setPage(current_page + 1);
-      }
-    }
-  };
+  // search implementation
 
-  //   search functionality
+  const searchedUsers = useUsers(allUsers, filter_value);
 
-  const useSearchedPosts = (allUsers, filter_value) => {
-    const sortedAndSearchedArray = useMemo(() => {
-      return allUsers.filter(
-        (user) =>
-          user.first_name.toLowerCase().includes(filter_value.toLowerCase()) ||
-          user.last_name.toLowerCase().includes(filter_value.toLowerCase()) ||
-          user.email.toLowerCase().includes(filter_value.toLowerCase())
-      );
-    });
-    // setUsers(result);
-  };
-
-  const searchedPosts = useSearchedPosts(allUsers, filter_value);
-
-  function searchUser(value) {
-    setFilterValue(value);
-
-    console.log(searchedPosts);
+  //   logout functionality
+  function logout() {
+    window.localStorage.removeItem("authToken");
+    dispatch({ type: "SET_IS_LOGGED", payload: false });
   }
 
   //  addNewUser functionality
@@ -86,14 +50,13 @@ function UserList(props) {
           id="site-search"
           name="q"
           filter={filter_value}
-          onChange={(e) => searchUser(e.target.value)}
+          onChange={(e) => setFilterValue(e.target.value)}
         />
         <button>Search</button>
-
-        {users.length ? (
+        {searchedUsers.length ? (
           <div>
-            {users.length}
-            {users.map((user) => (
+            {searchedUsers.length}
+            {searchedUsers.map((user) => (
               <UserItem
                 avatar={user.avatar}
                 email={user.email}
