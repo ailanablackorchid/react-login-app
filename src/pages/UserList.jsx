@@ -1,19 +1,20 @@
-import { React } from "react";
-import { useDispatch } from "react-redux";
-import UserItem from "../components/UserItem";
-import { useEffect, useState, useMemo } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import GetService from "../API/GetService";
+import UserItem from "../components/UserItem";
 import { useFetching } from "../hooks/useFetching";
 import { useUsers } from "../hooks/useSearch";
+import { useObserver } from "../hooks/useObserver";
 
 function UserList(props) {
   const dispatch = useDispatch();
 
-  const [current_page, setPage] = useState(1);
-  const [filter_value, setFilterValue] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filterValue, setFilterValue] = useState("");
+  const lastElement = useRef();
 
   const allUsers = useSelector((state) => state.user.users);
+  const totalPages = useSelector((state) => state.user.total_pages);
 
   //fetch data from API
 
@@ -21,21 +22,28 @@ function UserList(props) {
     const response = await GetService.getUserList(page);
     const json = await response.json();
     dispatch({ type: "ADD_MANY_USERS", payload: json.data });
+    dispatch({ type: "SET_PAGES_TOTAL", payload: json.total_pages });
   });
 
   useEffect(() => {
-    fetchUsers(current_page);
-  }, [current_page]);
+    fetchUsers(currentPage);
+  }, [currentPage]);
 
   // search implementation
 
-  const searchedUsers = useUsers(allUsers, filter_value);
+  const searchedUsers = useUsers(allUsers, filterValue);
 
-  //   logout functionality
+  //   logout implementation
   function logout() {
     window.localStorage.removeItem("authToken");
     dispatch({ type: "SET_IS_LOGGED", payload: false });
   }
+
+  // observer
+
+  useObserver(lastElement, currentPage < totalPages, isLoading, () => {
+    setCurrentPage(currentPage + 1);
+  });
 
   //  addNewUser functionality
   function addNewUser() {}
@@ -49,7 +57,7 @@ function UserList(props) {
           type="search"
           id="site-search"
           name="q"
-          filter={filter_value}
+          filter={filterValue}
           onChange={(e) => setFilterValue(e.target.value)}
         />
         <button>Search</button>
@@ -69,6 +77,7 @@ function UserList(props) {
         ) : (
           <div>No Users</div>
         )}
+        <div ref={lastElement}></div>
       </div>
     </div>
   );
