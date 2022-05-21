@@ -11,8 +11,8 @@ const ADD_USER = "ADD_USER";
 const ADD_MANY_USERS = "ADD_MANY_USERS";
 const SET_CURRENT_PAGE = "SET_CURRENT_PAGE";
 const SET_PAGES_TOTAL = "SET_PAGES_TOTAL";
+const EDIT_USER = "EDIT_USER";
 const SEARCH_USER = "SEARCH_USER";
-const EDIT_USERS = "EDIT_USERS";
 const DELETE_USER = "DELETE_USER";
 
 export const userReducer = (state = initialState, action) => {
@@ -35,7 +35,23 @@ export const userReducer = (state = initialState, action) => {
         (newuser) => !state.users.some((user) => newuser.id === user.id)
       );
       return { ...state, users: [...state.users, ...result] };
-
+    case EDIT_USER:
+      const resultEdit = state.users.map((user) => {
+        if (user.id === action.payload.id) {
+          const editedUser = {
+            ...user,
+            first_name: action.payload.first_name,
+            last_name: action.payload.last_name,
+            email: action.payload.email,
+          };
+          return editedUser;
+        } else {
+          return user;
+        }
+      });
+      console.log("resultEdit");
+      console.log(resultEdit);
+      return { ...state, users: resultEdit };
     default:
       return state;
   }

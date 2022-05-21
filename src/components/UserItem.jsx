@@ -1,8 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function UserItem(props) {
+  const navigate = useNavigate();
   return (
-    <div>
+    <div onClick={() => navigate("/edit/", { state: props })}>
       <div>
         <img src={props.avatar} />
       </div>

@@ -30,20 +30,17 @@ function AppRouter(props) {
       <Route path="*" element={<Navigate to="/users" replace />} />
     </Routes>
   ) : (
-    <>
-      <div>eve.holt@reqres.in</div>
-      <Routes>
-        {publicRoutes.map((route) => (
-          <Route
-            path={route.path}
-            exact={route.exact}
-            element={route.element}
-            key={route.path}
-          />
-        ))}
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </>
+    <Routes>
+      {publicRoutes.map((route) => (
+        <Route
+          path={route.path}
+          exact={route.exact}
+          element={route.element}
+          key={route.path}
+        />
+      ))}
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
 }
 

@@ -4,6 +4,7 @@ export default class PostService {
     const response = fetch("https://reqres.in/api/login", {
       method: "POST",
       mode: "cors",
+      cache: "default",
       headers: {
         "Content-Type": "application/json",
       },
