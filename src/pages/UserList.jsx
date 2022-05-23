@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import GetService from "../API/GetService";
 import UserItem from "../components/UserItem";
 import { useFetching } from "../hooks/useFetching";
@@ -12,6 +13,7 @@ function UserList(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const [filterValue, setFilterValue] = useState("");
   const lastElement = useRef();
+  const navigate = useNavigate();
 
   const allUsers = useSelector((state) => state.user.users);
   const totalPages = useSelector((state) => state.user.total_pages);
@@ -45,14 +47,13 @@ function UserList(props) {
     setCurrentPage(currentPage + 1);
   });
 
-  //  addNewUser functionality
-  function addNewUser() {}
-
   return (
     <div>
       <button onClick={logout}>Logout</button>
       <div>
-        <button onClick={addNewUser}>ADD NEW USER</button>
+        <button onClick={() => navigate("/create/", { state: props })}>
+          ADD NEW USER
+        </button>
         <input
           type="search"
           id="site-search"

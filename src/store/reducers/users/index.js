@@ -18,10 +18,15 @@ const DELETE_USER = "DELETE_USER";
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_USER:
+      console.log("ADD USER");
+      console.log(state.users);
+      console.log(action.payload);
+      const IdAdd = {};
+      IdAdd[action.payload.id] = true;
       return {
         ...state,
         users: [...state.users, action.payload],
-        userIds: (state.userIds[action.payload.id] = true),
+        userIds: { ...state.userIds, ...IdAdd },
       };
     case SET_CURRENT_PAGE:
       return { ...state, current_page: action.payload };
@@ -34,7 +39,15 @@ export const userReducer = (state = initialState, action) => {
       const result = action.payload.filter(
         (newuser) => !state.users.some((user) => newuser.id === user.id)
       );
-      return { ...state, users: [...state.users, ...result] };
+      const idResult = {};
+      result.forEach((user) => {
+        idResult[user.id] = true;
+      });
+      return {
+        ...state,
+        users: [...state.users, ...result],
+        userIds: { ...state.userIds, ...idResult },
+      };
     case EDIT_USER:
       const resultEdit = state.users.map((user) => {
         if (user.id === action.payload.id) {
@@ -49,7 +62,6 @@ export const userReducer = (state = initialState, action) => {
           return user;
         }
       });
-      console.log("resultEdit");
       console.log(resultEdit);
       return { ...state, users: resultEdit };
     default:
