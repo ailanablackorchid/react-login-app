@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import PostService from "../API/PostService";
 import { useFetching } from "../hooks/useFetching";
@@ -35,7 +35,7 @@ function Login(props) {
   };
 
   return (
-    <>
+    <div className="form">
       <section>Login</section>
       <form onSubmit={onSubmit}>
         <input
@@ -56,7 +56,7 @@ function Login(props) {
         />
         <button type="submit">LOGIN</button>
       </form>
-    </>
+    </div>
   );
 }
 

@@ -1,13 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import PostService from "../API/PostService";
+import { useFetching } from "../hooks/useFetching";
 import UserForm from "../components/UserForm";
-
-// console.log(data);
-// console.log(formData);
-// console.log(userIds);
-// dispatch({ type: "ADD_USER", payload: formData });
 
 function CreateUser(props) {
   const [formData, setFormData] = useState({
@@ -19,8 +15,16 @@ function CreateUser(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userIds = useSelector((state) => state.user.userIds);
+  const token = useSelector((state) => state.auth.token);
 
   const { first_name, last_name, email } = formData;
+
+  const [fetchCreate, isLoading, createError] = useFetching(
+    async (formData) => {
+      const response = await PostService.createUser(formData, token);
+      const json = await response.json();
+    }
+  );
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -34,13 +38,12 @@ function CreateUser(props) {
     var id = Math.floor(Math.random() * 1000 + 1);
     while (id in userIds) {
       id = Math.floor(Math.random() * 1000 + 1);
-      console.log(id);
     }
-    console.log("out of loop");
-    console.log(id);
     setFormData({ ...formData, id: id });
-    console.log(formData.id);
     dispatch({ type: "ADD_USER", payload: formData });
+    fetchCreate(formData);
+    alert("User was created");
+    navigate("/users/");
   };
 
   const onClick = () => {
@@ -56,6 +59,7 @@ function CreateUser(props) {
         last_name={last_name}
         email={email}
         onSubmit={onSubmit}
+        buttonName={"CREATE USER"}
       />
     </div>
   );

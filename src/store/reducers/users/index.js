@@ -12,15 +12,10 @@ const ADD_MANY_USERS = "ADD_MANY_USERS";
 const SET_CURRENT_PAGE = "SET_CURRENT_PAGE";
 const SET_PAGES_TOTAL = "SET_PAGES_TOTAL";
 const EDIT_USER = "EDIT_USER";
-const SEARCH_USER = "SEARCH_USER";
-const DELETE_USER = "DELETE_USER";
 
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_USER:
-      console.log("ADD USER");
-      console.log(state.users);
-      console.log(action.payload);
       const IdAdd = {};
       IdAdd[action.payload.id] = true;
       return {
@@ -62,7 +57,6 @@ export const userReducer = (state = initialState, action) => {
           return user;
         }
       });
-      console.log(resultEdit);
       return { ...state, users: resultEdit };
     default:
       return state;
