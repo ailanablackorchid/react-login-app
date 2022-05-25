@@ -57,6 +57,10 @@ button{
     padding: .1em;
     cursor: pointer;
 }
+button:disabled{
+    background-color: #aeaeae;
+
+}
 
 .logout{
     width: 100%;

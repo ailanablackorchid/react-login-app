@@ -67,7 +67,7 @@ function UserList(props) {
             filter={filterValue}
             onChange={(e) => setFilterValue(e.target.value)}
           />
-          <button>Search</button>
+          <button disabled={!filterValue}>Search</button>
         </div>
         {searchedUsers.length ? (
           <div>

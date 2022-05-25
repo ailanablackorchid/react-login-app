@@ -15,11 +15,13 @@ function Login(props) {
     const response = await PostService.login(formData);
     const json = await response.json();
     const token = json.token;
-    if (token) {
+    if (token !== undefined) {
       dispatch({ type: "SET_TOKEN", payload: token });
       dispatch({ type: "SET_IS_LOGGED", payload: true });
+      window.localStorage.setItem("authToken", token);
+    } else {
+      alert("Please enter password");
     }
-    window.localStorage.setItem("authToken", token);
   });
 
   const onChange = (e) => {
@@ -54,7 +56,12 @@ function Login(props) {
           placeholder="Enter password"
           onChange={onChange}
         />
-        <button type="submit">LOGIN</button>
+        <button type="submit" disabled={!(password && email)}>
+          LOGIN
+        </button>
+        {loginError && (
+          <h1 style={{ textAlign: "center" }}>Error: {loginError}</h1>
+        )}
       </form>
     </div>
   );

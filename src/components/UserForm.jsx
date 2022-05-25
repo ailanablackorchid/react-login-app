@@ -29,7 +29,12 @@ function UserForm(props) {
           required
         ></input>
 
-        <button type="submit">{props.buttonName}</button>
+        <button
+          type="submit"
+          disabled={!(props.email && props.last_name && props.first_name)}
+        >
+          {props.buttonName}
+        </button>
         <button type="button" onClick={props.onClick}>
           CANCEL
         </button>

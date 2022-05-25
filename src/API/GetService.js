@@ -9,7 +9,7 @@ export default class GetService {
         Authorization: `Bearer${token}`,
       },
       error: function (result, status) {
-        console.log(result);
+        return result;
       },
     });
     return response;
